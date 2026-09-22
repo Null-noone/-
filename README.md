@@ -22,6 +22,91 @@ Compose 项目名写死为 `bannerfp`（见 `docker-compose.yml` 的 `name`）�
 docker compose run --rm -v ${PWD}/testdata:/data:ro client -input /data/edge_cases.json
 ```
 
+## 测试
+
+栈起来之后（`docker compose up --build -d`），按下面自测。Windows PowerShell 把 `curl` 换成 `curl.exe`，`${PWD}` 一般可直接用。
+
+### 1. 健康检查与容器状态
+
+```bash
+docker compose ps
+curl -s http://127.0.0.1:8080/health
+docker inspect bannerfp-server-1 --format "{{.State.Health.Status}}"
+```
+
+期望：`{"status":"ok"}`，server 为 `healthy`。
+
+### 2. 题目自测数据（sample）
+
+宿主机直接打 server：
+
+```bash
+curl -s http://127.0.0.1:8080/fingerprint \
+  -H "Content-Type: application/json" \
+  --data-binary @testdata/sample.json
+```
+
+用容器里的 client（只走内部服务名 `http://server:8080`）：
+
+```bash
+docker compose run --rm client -input /data/sample.json
+```
+
+期望至少识别出 OpenSSH 8.9p1 / nginx 1.24.0 / Apache 2.4.57 / MySQL 8.0.32 / Redis / ProFTPD 1.3.7 / Jetty 9.4.51；`1.2.3.23` 的 `QUIT` 为 `protocol: "unknown"`。
+
+看 client 启动时打过的结果：
+
+```bash
+docker compose logs client
+```
+
+### 3. 边界值与扩展协议回归（135 条 + API 契约）
+
+对着容器里的 server 跑脚本，应 **146/146 通过**：
+
+```bash
+go run ./scripts/test_edge_cases.go -url http://127.0.0.1:8080
+```
+
+只导出 / 看用例清单，不访问服务：
+
+```bash
+go run ./scripts/test_edge_cases.go -offline
+go run ./scripts/test_edge_cases.go -dump testdata/edge_cases.json
+```
+
+用 client 喂同一批边界数据：
+
+```bash
+docker compose run --rm -v ${PWD}/testdata:/data:ro client -input /data/edge_cases.json
+```
+
+### 4. 接口容错（不能 5xx）
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/fingerprint -H "Content-Type: application/json" --data-binary "[]"
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/fingerprint -H "Content-Type: application/json" --data-binary "{not-json"
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/fingerprint -H "Content-Type: application/json" --data-binary "{}"
+```
+
+期望：空数组 `200`，非法 JSON / 对象 body 为 `4xx`（本地实测为 `400`）。
+
+PowerShell：
+
+```powershell
+curl.exe -s -o NUL -w "%{http_code}`n" http://127.0.0.1:8080/fingerprint -H "Content-Type: application/json" --data-binary "[]"
+```
+
+### 5. 不走容器的单元测试
+
+```bash
+go test ./...
+go run ./cmd/server -listen :8080 -rules ./rules
+go run ./cmd/client -server http://127.0.0.1:8080 -input testdata/sample.json
+```
+
+`go test` 覆盖题目示例深度（SSH/HTTP/MySQL/Redis/FTP）以及 unknown。8080 已被 Compose 占用时，先 `docker compose down` 或给本地 server 换端口。
+
 ## 接口
 
 ### `GET /health`
@@ -61,11 +146,7 @@ go run ./cmd/server -listen :8080 -rules ./rules
 go run ./cmd/client -server http://127.0.0.1:8080 -input testdata/sample.json
 ```
 
-边界 / 扩展协议回归：
-
-```bash
-go run ./scripts/test_edge_cases.go -url http://127.0.0.1:8080
-```
+完整回归命令见上面的「测试」。
 
 ## 识别规则与代码解耦
 
