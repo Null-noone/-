@@ -27,6 +27,20 @@
   banner_contains:
     - Redis is running in protected mode
 
+- id: redis-loading-misconf
+  protocol: Redis
+  product: Redis
+  priority: 100
+  confidence: 0.85
+  banner_regex: '(?i)^-(?:LOADING|MISCONF|BUSY|NOAUTH|ERR|DENIED)\b'
+
+- id: redis-info-version
+  protocol: Redis
+  product: Redis
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)redis_version:(?P<version>[\d.]+)'
+
 - id: redis-ok-port
   protocol: Redis
   product: Redis
@@ -105,3 +119,11 @@
   banner_not_contains:
     - ESMTP
     - SMTP
+
+- id: ftp-421
+  protocol: FTP
+  product: ""
+  priority: 50
+  confidence: 0.6
+  port_in: [21, 2121]
+  banner_regex: '(?i)^421\b'

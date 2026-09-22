@@ -24,12 +24,20 @@
     - PostgreSQL
     - FATAL
 
-- id: pgsql-fatal
+- id: pgsql-specific
   protocol: PostgreSQL
   product: PostgreSQL
   priority: 100
   confidence: 0.92
-  banner_regex: '(?i)FATAL:|SFATAL|pg_hba\.conf|unsupported frontend protocol'
+  banner_regex: '(?i)SFATAL|pg_hba\.conf|unsupported frontend protocol|password authentication failed for user'
+
+- id: pgsql-fatal-on-pg-port
+  protocol: PostgreSQL
+  product: PostgreSQL
+  priority: 90
+  confidence: 0.85
+  port_in: [5432, 5433, 15432]
+  banner_regex: '(?i)FATAL:'
 
 - id: mongodb-native-http
   protocol: MongoDB

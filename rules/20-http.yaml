@@ -120,6 +120,13 @@
   confidence: 0.92
   banner_regex: '(?i)X-Jenkins:\s*(?P<version>[\d.]+)'
 
+- id: http-php
+  protocol: HTTP
+  product: PHP
+  priority: 95
+  confidence: 0.88
+  banner_regex: '(?i)X-Powered-By:\s*PHP/(?P<version>[\d.]+)'
+
 - id: http-server-generic
   protocol: HTTP
   product: ""

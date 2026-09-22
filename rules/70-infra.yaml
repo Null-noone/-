@@ -74,7 +74,7 @@
   product: ""
   priority: 90
   confidence: 0.85
-  banner_regex: '(?i)^:.*NOTICE AUTH|\bPRIVMSG\b|^:[^\s]+ 00\d'
+  banner_regex: '(?i)^:\S+\s+NOTICE AUTH|^:\S+\s+00\d\b'
 
 - id: nntp
   protocol: NNTP
@@ -182,3 +182,11 @@
       regex: '(?i)Ubuntu'
     - value: Debian
       regex: '(?i)Debian'
+
+- id: kafka-text
+  protocol: Kafka
+  product: Kafka
+  priority: 80
+  confidence: 0.75
+  port_in: [9092, 9093]
+  banner_regex: '(?i)\bKafka\b'

@@ -40,6 +40,27 @@
   banner_not_contains:
     - FTP
 
+- id: smtp-220-mail-ports
+  protocol: SMTP
+  product: ""
+  priority: 70
+  confidence: 0.72
+  port_in: [25, 465, 587]
+  banner_regex: '(?i)^220\b'
+  banner_not_contains:
+    - FTP
+    - ProFTPD
+    - vsFTPd
+    - Pure-FTPd
+    - FileZilla
+
+- id: smtp-ehlo-reply
+  protocol: SMTP
+  product: ""
+  priority: 75
+  confidence: 0.78
+  banner_regex: '(?is)(?:^|\r\n)250[- ].*(?:PIPELINING|STARTTLS|\bSIZE\b|\bAUTH\b)'
+
 - id: pop3-dovecot
   protocol: POP3
   product: Dovecot

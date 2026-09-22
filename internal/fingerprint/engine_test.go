@@ -40,6 +40,9 @@ func TestSampleDepth(t *testing.T) {
 		{Input{"1.2.3.19", 9999, "\x16\x03\x01\x00\xa5\x01\x00\x00\xa1"}, "TLS", "", "", ""},
 		{Input{"10.4.0.1", 25, "220 mail.example.com ESMTP Postfix"}, "SMTP", "Postfix", "", ""},
 		{Input{"10.6.0.1", 5432, `FATAL:  password authentication failed for user "postgres"`}, "PostgreSQL", "PostgreSQL", "", ""},
+		{Input{"9.9.9.1", 25, "220 mail.example.com"}, "SMTP", "", "", ""},
+		{Input{"9.9.9.2", 6379, "-LOADING Redis is loading the dataset in memory"}, "Redis", "Redis", "", ""},
+		{Input{"9.9.9.3", 80, "HTTP/1.1 200 OK\r\nX-Powered-By: PHP/8.1.27"}, "HTTP", "PHP", "8.1.27", ""},
 	}
 
 	for _, tc := range cases {
@@ -55,6 +58,24 @@ func TestSampleDepth(t *testing.T) {
 		}
 		if tc.os != "" && got.OSHint != tc.os {
 			t.Errorf("%s:%d os_hint=%q want %q", tc.in.IP, tc.in.Port, got.OSHint, tc.os)
+		}
+	}
+}
+
+func TestFalsePositives(t *testing.T) {
+	rules, err := LoadRulesDir(rulesDir(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	eng := NewEngine(rules)
+	cases := []Input{
+		{IP: "1.1.1.1", Port: 8080, Banner: "app log FATAL: disk full"},
+		{IP: "1.1.1.2", Port: 80, Banner: "user said PRIVMSG in chat log"},
+	}
+	for _, in := range cases {
+		got := eng.Identify(in)
+		if got.Protocol == "PostgreSQL" || got.Protocol == "IRC" {
+			t.Errorf("%q => %s (false positive)", in.Banner, got.Protocol)
 		}
 	}
 }

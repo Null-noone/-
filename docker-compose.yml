@@ -29,6 +29,8 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
+    mem_limit: 256m
+    pids_limit: 256
     networks:
       frontend:
       backend:
@@ -58,6 +60,8 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
+    mem_limit: 128m
+    pids_limit: 64
     networks:
       - backend
     depends_on:

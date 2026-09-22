@@ -11,7 +11,11 @@ import (
 	"bannerfp/internal/fingerprint"
 )
 
-const maxBodyBytes = 16 << 20
+const (
+	maxBodyBytes   = 16 << 20
+	maxBatchItems  = 5000
+	maxBannerBytes = 256 << 10
+)
 
 type Server struct {
 	engine *fingerprint.Engine
@@ -55,6 +59,10 @@ func (s *Server) fingerprint(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid json array"})
 		return
 	}
+	if len(items) > maxBatchItems {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "too many items"})
+		return
+	}
 
 	inputs := make([]fingerprint.Input, 0, len(items))
 	for _, item := range items {
@@ -62,10 +70,14 @@ func (s *Server) fingerprint(w http.ResponseWriter, r *http.Request) {
 			inputs = append(inputs, fingerprint.Input{})
 			continue
 		}
+		banner := asString(item["banner"])
+		if len(banner) > maxBannerBytes {
+			banner = banner[:maxBannerBytes]
+		}
 		inputs = append(inputs, fingerprint.Input{
 			IP:     asString(item["ip"]),
 			Port:   asInt(item["port"]),
-			Banner: asString(item["banner"]),
+			Banner: banner,
 		})
 	}
 	writeJSON(w, http.StatusOK, s.engine.IdentifyBatch(inputs))
