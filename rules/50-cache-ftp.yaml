@@ -1,0 +1,107 @@
+- id: redis-pong
+  protocol: Redis
+  product: Redis
+  priority: 100
+  confidence: 0.85
+  banner_regex: '(?i)^\+PONG'
+
+- id: redis-err
+  protocol: Redis
+  product: Redis
+  priority: 100
+  confidence: 0.8
+  banner_regex: '(?i)^-ERR\b'
+
+- id: redis-noauth
+  protocol: Redis
+  product: Redis
+  priority: 100
+  confidence: 0.85
+  banner_regex: '(?i)^-NOAUTH\b'
+
+- id: redis-denied
+  protocol: Redis
+  product: Redis
+  priority: 110
+  confidence: 0.9
+  banner_contains:
+    - Redis is running in protected mode
+
+- id: redis-ok-port
+  protocol: Redis
+  product: Redis
+  priority: 70
+  confidence: 0.7
+  banner_regex: '(?i)^\+OK\s*$'
+  port_in: [6379, 6380]
+  port_not_in: [110, 995]
+
+- id: memcached-version
+  protocol: Memcached
+  product: Memcached
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)^VERSION\s+(?P<version>[\d.]+)'
+
+- id: memcached-stat
+  protocol: Memcached
+  product: Memcached
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)STAT\s+version\s+(?P<version>[\d.]+)'
+
+- id: memcached-error
+  protocol: Memcached
+  product: Memcached
+  priority: 80
+  confidence: 0.75
+  banner_regex: '(?i)^ERROR\s*$'
+  port_in: [11211]
+
+- id: ftp-proftpd
+  protocol: FTP
+  product: ProFTPD
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)220[- ].*ProFTPD\s+(?P<version>[\d.]+)'
+
+- id: ftp-vsftpd
+  protocol: FTP
+  product: vsFTPd
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)\(vsFTPd\s+(?P<version>[\d.]+)\)'
+
+- id: ftp-pureftpd
+  protocol: FTP
+  product: Pure-FTPd
+  priority: 110
+  confidence: 0.9
+  banner_regex: '(?i)Pure-FTPd'
+
+- id: ftp-filezilla
+  protocol: FTP
+  product: FileZilla
+  priority: 110
+  confidence: 0.9
+  banner_regex: '(?i)FileZilla Server\s+(?P<version>[\d.]+)'
+
+- id: ftp-microsoft
+  protocol: FTP
+  product: Microsoft
+  priority: 110
+  confidence: 0.9
+  banner_regex: '(?i)220[- ].*Microsoft FTP Service'
+  banner_not_contains:
+    - ESMTP
+
+- id: ftp-generic-220
+  protocol: FTP
+  product: ""
+  priority: 45
+  confidence: 0.55
+  banner_regex: '(?i)^220\b'
+  port_in: [21, 2121]
+  banner_not_contains:
+    - ESMTP
+    - SMTP

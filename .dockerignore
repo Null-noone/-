@@ -1,0 +1,9 @@
+.git
+.claude
+scripts
+testdata
+*.md
+helloworld.py
+**/*_test.go
+.dockerignore
+docker-compose.yml

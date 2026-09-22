@@ -1,0 +1,184 @@
+- id: ldap
+  protocol: LDAP
+  product: ""
+  priority: 90
+  confidence: 0.85
+  banner_regex: '(?i)ldap_bind:|LdapErr|\bLDAP\b'
+
+- id: sip
+  protocol: SIP
+  product: ""
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)^SIP/2\.0'
+
+- id: sip-asterisk
+  protocol: SIP
+  product: Asterisk
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)Asterisk(?: PBX)?\s+(?P<version>[\d.]+)'
+
+- id: rtsp
+  protocol: RTSP
+  product: ""
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)^RTSP/1\.0'
+
+- id: rtsp-vlc
+  protocol: RTSP
+  product: VLC
+  priority: 110
+  confidence: 0.92
+  banner_regex: '(?i)Server:\s*VLC/(?P<version>[\d.]+)'
+
+- id: socks5
+  protocol: SOCKS
+  product: ""
+  priority: 70
+  confidence: 0.65
+  port_in: [1080]
+  banner_regex: '(?s)^\x05[\x00\x01\x02\xff]'
+
+- id: tls
+  protocol: TLS
+  product: ""
+  priority: 90
+  confidence: 0.85
+  banner_regex: '(?s)^\x16\x03[\x00-\x04]'
+
+- id: smb
+  protocol: SMB
+  product: ""
+  priority: 95
+  confidence: 0.9
+  banner_regex: '(?s)^(?:[\xff\xfe]|\x{00FF}|\x{FFFD}|\\xff|\\xfe)SMB'
+
+- id: rsync
+  protocol: Rsync
+  product: ""
+  priority: 100
+  confidence: 0.93
+  banner_regex: '(?i)^@RSYNCD:\s*(?P<version>[\d.]+)'
+
+- id: zookeeper
+  protocol: ZooKeeper
+  product: ZooKeeper
+  priority: 100
+  confidence: 0.93
+  banner_regex: '(?i)Zookeeper version:\s*(?P<version>[\d.]+)'
+
+- id: irc
+  protocol: IRC
+  product: ""
+  priority: 90
+  confidence: 0.85
+  banner_regex: '(?i)^:.*NOTICE AUTH|\bPRIVMSG\b|^:[^\s]+ 00\d'
+
+- id: nntp
+  protocol: NNTP
+  product: ""
+  priority: 90
+  confidence: 0.88
+  banner_regex: '(?i)^200\b.*\bNNTP\b'
+
+- id: nntp-inn
+  protocol: NNTP
+  product: INN
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)\bINN\s+(?P<version>[\d.]+)'
+
+- id: xmpp
+  protocol: XMPP
+  product: ""
+  priority: 95
+  confidence: 0.88
+  banner_regex: '(?i)<stream:stream[^>]+jabber|xmlns=[''"]jabber:'
+
+- id: docker-api
+  protocol: HTTP
+  product: Docker
+  priority: 120
+  confidence: 0.93
+  banner_regex: '(?i)Server:\s*Docker/(?P<version>[\d.]+)'
+
+- id: docker-api-header
+  protocol: HTTP
+  product: Docker
+  priority: 118
+  confidence: 0.88
+  banner_contains:
+    - Api-Version
+    - Docker
+
+- id: kubernetes
+  protocol: Kubernetes
+  product: Kubernetes
+  priority: 115
+  confidence: 0.9
+  banner_regex: '(?i)"kind"\s*:\s*"Status"[\s\S]*"apiVersion"\s*:\s*"v1"|Unauthorized[\s\S]*apiVersion'
+
+- id: etcd
+  protocol: etcd
+  product: etcd
+  priority: 120
+  confidence: 0.93
+  banner_regex: '(?i)"etcdserver"\s*:\s*"(?P<version>[\d.]+)"'
+
+- id: consul
+  protocol: Consul
+  product: Consul
+  priority: 115
+  confidence: 0.9
+  banner_regex: '(?i)X-Consul-Index|"Datacenter"\s*:'
+
+- id: consul-version
+  protocol: Consul
+  product: Consul
+  priority: 116
+  confidence: 0.92
+  banner_regex: '(?i)"Version"\s*:\s*"(?P<version>[\d.]+)"'
+  banner_contains:
+    - Datacenter
+
+- id: ipp-cups
+  protocol: IPP
+  product: CUPS
+  priority: 115
+  confidence: 0.92
+  banner_regex: '(?i)Server:\s*CUPS/(?P<version>[\d.]+)|Content-Type:\s*application/ipp'
+
+- id: winrm
+  protocol: HTTP
+  product: HTTPAPI
+  priority: 105
+  confidence: 0.85
+  banner_regex: '(?i)Microsoft-HTTPAPI/(?P<version>[\d.]+)'
+  banner_contains:
+    - Negotiate
+
+- id: snmp
+  protocol: SNMP
+  product: ""
+  priority: 85
+  confidence: 0.8
+  banner_regex: '(?i)\bSNMP|SNMPv2-MIB'
+  os_hints:
+    - value: Linux
+      regex: '(?i)\bLinux\b'
+    - value: Windows
+      regex: '(?i)Windows'
+
+- id: dns-bind
+  protocol: DNS
+  product: BIND
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)version\.bind[\s\S]*?(?P<version>\d+\.\d+\.\d+)'
+  os_hints:
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+    - value: Debian
+      regex: '(?i)Debian'

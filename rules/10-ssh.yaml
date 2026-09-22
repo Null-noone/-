@@ -1,0 +1,41 @@
+- id: ssh-openssh
+  protocol: SSH
+  product: OpenSSH
+  priority: 100
+  confidence: 0.95
+  banner_regex: '(?i)SSH-[\d.]+-OpenSSH[_-](?P<version>[\d.]+p?\d*)'
+  os_hints:
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+    - value: Debian
+      regex: '(?i)Debian'
+    - value: FreeBSD
+      regex: '(?i)FreeBSD'
+
+- id: ssh-dropbear
+  protocol: SSH
+  product: dropbear
+  priority: 95
+  confidence: 0.93
+  banner_regex: '(?i)SSH-[\d.]+-dropbear[_-](?P<version>[\d.]+)'
+
+- id: ssh-cisco
+  protocol: SSH
+  product: Cisco
+  priority: 95
+  confidence: 0.9
+  banner_regex: '(?i)SSH-[\d.]+-Cisco[-_](?P<version>[\d.]+)'
+
+- id: ssh-libssh
+  protocol: SSH
+  product: libssh
+  priority: 95
+  confidence: 0.9
+  banner_regex: '(?i)SSH-[\d.]+-libssh[_-](?P<version>[\d.]+)'
+
+- id: ssh-generic
+  protocol: SSH
+  product: ""
+  priority: 60
+  confidence: 0.75
+  banner_regex: '(?i)^\s*SSH-[\d.]+'

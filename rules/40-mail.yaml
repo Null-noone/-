@@ -1,0 +1,89 @@
+- id: smtp-postfix
+  protocol: SMTP
+  product: Postfix
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)ESMTP\s+Postfix(?:\s+\((?P<os>Ubuntu|Debian)\))?'
+  os_hints:
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+    - value: Debian
+      regex: '(?i)Debian'
+
+- id: smtp-exim
+  protocol: SMTP
+  product: Exim
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)ESMTP\s+Exim\s+(?P<version>[\d.]+)'
+
+- id: smtp-sendmail
+  protocol: SMTP
+  product: Sendmail
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)ESMTP\s+Sendmail\s+(?P<version>[\d.]+)'
+
+- id: smtp-microsoft
+  protocol: SMTP
+  product: Microsoft
+  priority: 110
+  confidence: 0.9
+  banner_regex: '(?i)Microsoft ESMTP MAIL Service'
+
+- id: smtp-generic
+  protocol: SMTP
+  product: ""
+  priority: 80
+  confidence: 0.8
+  banner_regex: '(?i)\bESMTP\b'
+  banner_not_contains:
+    - FTP
+
+- id: pop3-dovecot
+  protocol: POP3
+  product: Dovecot
+  priority: 110
+  confidence: 0.92
+  banner_regex: '(?i)^\+OK.*Dovecot'
+
+- id: pop3-exchange
+  protocol: POP3
+  product: Exchange
+  priority: 110
+  confidence: 0.9
+  banner_regex: '(?i)^\+OK.*(?:Exchange|Microsoft).*(?:POP3|POP)'
+
+- id: pop3-generic
+  protocol: POP3
+  product: ""
+  priority: 70
+  confidence: 0.75
+  banner_regex: '(?i)^\+OK.*\bPOP3\b'
+  port_not_in: [6379, 6380]
+
+- id: imap-dovecot
+  protocol: IMAP
+  product: Dovecot
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)\* OK.*IMAP.*Dovecot'
+  os_hints:
+    - value: Debian
+      regex: '(?i)Debian'
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+
+- id: imap-cyrus
+  protocol: IMAP
+  product: Cyrus
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)Cyrus IMAP(?:\s+v)?(?P<version>[\d.]+)'
+
+- id: imap-generic
+  protocol: IMAP
+  product: ""
+  priority: 80
+  confidence: 0.8
+  banner_regex: '(?i)^\*\s+OK.*IMAP4'

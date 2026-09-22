@@ -1,0 +1,57 @@
+- id: telnet-login
+  protocol: Telnet
+  product: ""
+  priority: 80
+  confidence: 0.8
+  banner_regex: '(?i)login:\s*$'
+  os_hints:
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+    - value: Debian
+      regex: '(?i)Debian'
+
+- id: telnet-iac
+  protocol: Telnet
+  product: ""
+  priority: 85
+  confidence: 0.82
+  # 0xFF 经 JSON 传输常被替换成 U+FFFD，字面 \xff 也要认。
+  banner_regex: '(?s)^(?:\xff[\xfb-\xfe]|\\xff\\x(?:fb|fc|fd|fe)|\x{FFFD})'
+  port_in: [23]
+
+- id: rdp-tpkt
+  protocol: RDP
+  product: ""
+  priority: 90
+  confidence: 0.85
+  banner_regex: '(?s)^\x03\x00'
+
+- id: vnc-rfb
+  protocol: VNC
+  product: ""
+  priority: 100
+  confidence: 0.93
+  banner_regex: '(?i)^RFB\s+(?P<version>\d{3}\.\d{3})'
+
+- id: mqtt-connack
+  protocol: MQTT
+  product: ""
+  priority: 75
+  confidence: 0.7
+  banner_regex: '(?s)^\x20\x02'
+  port_in: [1883, 8883]
+
+- id: amqp
+  protocol: AMQP
+  product: RabbitMQ
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)^AMQP'
+
+- id: modbus
+  protocol: Modbus
+  product: ""
+  priority: 70
+  confidence: 0.7
+  port_in: [502]
+  banner_regex: '(?s)^\x00.'

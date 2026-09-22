@@ -1,0 +1,120 @@
+- id: mysql-mariadb
+  protocol: MySQL
+  product: MariaDB
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)(?:5\.5\.5-)?(?P<version>\d+\.\d+\.\d+)-MariaDB'
+
+- id: mysql-handshake
+  protocol: MySQL
+  product: MySQL
+  priority: 90
+  confidence: 0.9
+  banner_regex: '(?i)(?:\x00\x00\x00|\x0a|\\x00\\x00\\x00\\n)(?P<version>\d+\.\d+\.\d+)'
+
+- id: mysql-version-port
+  protocol: MySQL
+  product: MySQL
+  priority: 70
+  confidence: 0.8
+  port_in: [3306, 3307]
+  banner_regex: '(?P<version>\d+\.\d+\.\d+)'
+  banner_not_contains:
+    - MariaDB
+    - PostgreSQL
+    - FATAL
+
+- id: pgsql-fatal
+  protocol: PostgreSQL
+  product: PostgreSQL
+  priority: 100
+  confidence: 0.92
+  banner_regex: '(?i)FATAL:|SFATAL|pg_hba\.conf|unsupported frontend protocol'
+
+- id: mongodb-native-http
+  protocol: MongoDB
+  product: MongoDB
+  priority: 100
+  confidence: 0.9
+  banner_contains:
+    - access MongoDB over HTTP
+
+- id: mongodb-json
+  protocol: MongoDB
+  product: MongoDB
+  priority: 80
+  confidence: 0.8
+  banner_regex: '(?i)"codeName"\s*:\s*"CommandNotFound"|no such cmd'
+
+- id: mssql
+  protocol: MSSQL
+  product: SQL Server
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)Microsoft SQL Server(?:\s+(?P<version>\d{4}))?'
+
+- id: oracle-tns
+  protocol: Oracle
+  product: Oracle
+  priority: 100
+  confidence: 0.88
+  banner_regex: '(?i)\(DESCRIPTION=\(ERR=|(?i)TNS-'
+
+- id: elasticsearch-ver-after-tagline
+  protocol: Elasticsearch
+  product: Elasticsearch
+  priority: 112
+  confidence: 0.95
+  banner_regex: '(?i)You Know, for Search[\s\S]{0,800}"number"\s*:\s*"(?P<version>[\d.]+)"'
+
+- id: elasticsearch-ver-before-tagline
+  protocol: Elasticsearch
+  product: Elasticsearch
+  priority: 112
+  confidence: 0.95
+  banner_regex: '(?i)"number"\s*:\s*"(?P<version>[\d.]+)"[\s\S]{0,800}You Know, for Search'
+
+- id: elasticsearch
+  protocol: Elasticsearch
+  product: Elasticsearch
+  priority: 110
+  confidence: 0.9
+  banner_contains:
+    - You Know, for Search
+
+- id: couchdb
+  protocol: CouchDB
+  product: CouchDB
+  priority: 110
+  confidence: 0.93
+  banner_regex: '(?i)(?:CouchDB/(?P<version>[\d.]+)|"couchdb"\s*:\s*"Welcome")'
+
+- id: cassandra
+  protocol: Cassandra
+  product: Cassandra
+  priority: 90
+  confidence: 0.85
+  banner_contains:
+    - unsupported protocol version
+  port_in: [9042, 9160]
+
+- id: cassandra-text
+  protocol: Cassandra
+  product: Cassandra
+  priority: 80
+  confidence: 0.8
+  banner_regex: '(?i)Invalid or unsupported protocol version'
+
+- id: clickhouse
+  protocol: ClickHouse
+  product: ClickHouse
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)ClickHouse|DB::Exception|AUTHENTICATION_FAILED'
+
+- id: influxdb
+  protocol: InfluxDB
+  product: InfluxDB
+  priority: 110
+  confidence: 0.92
+  banner_regex: '(?i)X-Influxdb-Version:\s*(?P<version>[\d.]+)'

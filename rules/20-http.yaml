@@ -1,0 +1,145 @@
+- id: http-nginx
+  protocol: HTTP
+  product: nginx
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*nginx(?:/(?P<version>[\d.]+))?'
+  os_hints:
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+
+- id: http-openresty
+  protocol: HTTP
+  product: openresty
+  priority: 102
+  confidence: 0.9
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*openresty(?:/(?P<version>[\d.]+))?'
+
+- id: http-apache
+  protocol: HTTP
+  product: Apache
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*Apache(?:/(?P<version>[\d.]+))?'
+  banner_not_contains:
+    - Apache-Coyote
+    - Apache Tomcat
+  os_hints:
+    - value: Ubuntu
+      regex: '(?i)Ubuntu'
+
+- id: http-jetty-slash
+  protocol: HTTP
+  product: Jetty
+  priority: 100
+  confidence: 0.88
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*Jetty/(?P<version>[\d.]+)'
+
+- id: http-jetty-paren
+  protocol: HTTP
+  product: Jetty
+  priority: 100
+  confidence: 0.88
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*Jetty\((?P<version>[\d.]+)'
+
+- id: http-iis
+  protocol: HTTP
+  product: IIS
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*Microsoft-IIS/(?P<version>[\d.]+)'
+
+- id: http-tomcat-full
+  protocol: HTTP
+  product: Tomcat
+  priority: 101
+  confidence: 0.9
+  banner_regex: '(?i)Apache\s+Tomcat/(?P<version>[\d.]+)'
+
+- id: http-tomcat-coyote
+  protocol: HTTP
+  product: Tomcat
+  priority: 100
+  confidence: 0.85
+  banner_contains:
+    - Apache-Coyote
+
+- id: http-caddy
+  protocol: HTTP
+  product: Caddy
+  priority: 100
+  confidence: 0.88
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*Caddy\b'
+
+- id: http-lighttpd
+  protocol: HTTP
+  product: lighttpd
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*lighttpd(?:/(?P<version>[\d.]+))?'
+
+- id: http-gunicorn
+  protocol: HTTP
+  product: gunicorn
+  priority: 100
+  confidence: 0.88
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*gunicorn(?:/(?P<version>[\d.]+))?'
+
+- id: http-weblogic
+  protocol: HTTP
+  product: WebLogic
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)WebLogic(?:\s+Server)?\s+(?P<version>[\d.]+)'
+
+- id: http-wildfly
+  protocol: HTTP
+  product: WildFly
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*WildFly/(?P<version>[\d.]+)'
+
+- id: http-squid
+  protocol: HTTP
+  product: squid
+  priority: 100
+  confidence: 0.9
+  banner_regex: '(?i)(?:squid/(?P<version>[\d.]+)|X-Squid-Error)'
+
+- id: http-tinyproxy
+  protocol: HTTP
+  product: tinyproxy
+  priority: 100
+  confidence: 0.88
+  banner_regex: '(?i)tinyproxy/(?P<version>[\d.]+)'
+
+- id: http-jenkins
+  protocol: HTTP
+  product: Jenkins
+  priority: 105
+  confidence: 0.92
+  banner_regex: '(?i)X-Jenkins:\s*(?P<version>[\d.]+)'
+
+- id: http-server-generic
+  protocol: HTTP
+  product: ""
+  priority: 50
+  confidence: 0.75
+  banner_regex: '(?i)(?:^|\r\n)server\s*:\s*(?P<product>[A-Za-z0-9._+-]+)(?:/(?P<version>[\d.]+))?'
+
+- id: http-generic
+  protocol: HTTP
+  product: ""
+  priority: 40
+  confidence: 0.65
+  banner_regex: '(?i)^\s*HTTP/[\d.]+'
+  banner_not_contains:
+    - "SIP/2.0"
+    - "RTSP/1.0"
+
+- id: http2-preface
+  protocol: HTTP
+  product: ""
+  priority: 55
+  confidence: 0.7
+  banner_regex: '(?i)^PRI \* HTTP/2\.0'

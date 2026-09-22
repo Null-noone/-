@@ -1,0 +1,72 @@
+# 生产向编排：
+# - client 只走内部网 backend，用服务名访问 server，不走宿主机端口
+# - server 另挂 frontend，仅把 8080 暴露给评估者 / 宿主机
+# - 启动依赖用真实 HTTP 健康检查，而不是 started
+# - 非 root、丢权限、禁止提权、根只读
+# - 识别规则以文件挂载，和程序解耦
+# name 显式写出：仓库目录若叫 "-" 之类，Compose 会因项目名为空而拒绝启动。
+name: bannerfp
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/server/Dockerfile
+    image: bannerfp-server:local
+    restart: unless-stopped
+    environment:
+      LISTEN_ADDR: ":8080"
+      RULES_DIR: /app/rules
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./rules:/app/rules:ro
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: "65532:65532"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      frontend:
+      backend:
+    healthcheck:
+      test: ["CMD", "/app/server", "-healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 8
+      start_period: 5s
+
+  client:
+    build:
+      context: .
+      dockerfile: docker/client/Dockerfile
+    image: bannerfp-client:local
+    restart: "no"
+    environment:
+      SERVER_URL: http://server:8080
+      INPUT_FILE: /data/sample.json
+    volumes:
+      - ./testdata:/data:ro
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: "65532:65532"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+    depends_on:
+      server:
+        condition: service_healthy
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true

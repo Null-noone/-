@@ -1,0 +1,6 @@
+/server
+/client
+*.exe
+dist/
+.idea/
+.vscode/
